@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id         Int          @id @default(autoincrement())
+  user_img   String?      @db.VarChar(300)
+  firstName  String       @db.VarChar(50)
+  lastName   String       @db.VarChar(50)
+  email      String       @db.VarChar(50) @unique
+  mobile     String       @db.VarChar(50)
+  password   String       @db.VarChar(50)
+  otp        String       @db.VarChar(10)
+  createdAt  DateTime     @default(now()) @db.Timestamp(0)
+  updatedAt  DateTime     @default(now()) @db.Timestamp(0) @updatedAt
+}
+
+model categories {
+  id         Int         @id @default(autoincrement())
+  catimg     String      @db.VarChar(300)
+  name       String      @db.VarChar(100) @unique
+  createdAt  DateTime    @default(now()) @db.Timestamp(0)
+  updatedAt  DateTime    @default(now()) @db.Timestamp(0) @updatedAt
+  products products[]
+}
+
+model products  {
+  id            Int        @id @default(autoincrement())
+  title         String     @db.VarChar(100)
+  img1          String     @db.VarChar(200)
+  img2          String?    @db.VarChar(200)
+  img3          String?    @db.VarChar(200)
+  location      String?    @db.VarChar(300)
+  brands        String?    @db.VarChar(300)
+  conditions    String?    @db.VarChar(300)
+  type          String?    @db.VarChar(200)
+  price         String     @db.VarChar(200)
+  des           String     @db.LongText
+  catID         Int
+  categories    categories @relation(fields: [catID],references: [id],onDelete: Restrict,onUpdate:Cascade)
+  createdAt     DateTime    @default(now()) @db.Timestamp(0)
+  updatedAt     DateTime    @default(now()) @db.Timestamp(0) @updatedAt
+  product_details product_details[]
+}
+
+model product_details {
+  id         Int   @id @default(autoincrement()) @db.UnsignedInt
+  product_id Int
+  created_at DateTime @default(now()) @db.Timestamp(0)
+  updated_at DateTime @default(now()) @db.Timestamp(0)
+  products   products @relation(fields: [product_id], references: [id], onUpdate: Restrict, onDelete: Cascade)
+}
+
+model socials {
+  id         Int       @id @default(autoincrement())
+  facebook   String?   @db.VarChar(200)
+  youtube    String?   @db.VarChar(200)
+  twitter    String?   @db.VarChar(200)
+  linkedin   String?   @db.VarChar(200)
+  createdAt  DateTime  @default(now()) @db.Timestamp(0)
+  updatedAt  DateTime  @default(now()) @db.Timestamp(0) @updatedAt
+}
+
+model subscribers  {
+  id            Int         @id @default(autoincrement())
+  email         String      @db.VarChar(100) @unique
+  createdAt     DateTime    @default(now()) @db.Timestamp(0)
+  updatedAt     DateTime    @default(now()) @db.Timestamp(0) @updatedAt
+}
+
+
